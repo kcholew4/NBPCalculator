@@ -1,4 +1,8 @@
-# nbpcalculator
+# NBPCalculator
+
+Currency calculator based on middle exchange rates published by NBP.
+
+Deployed version: https://agitated-euclid-a823ed.netlify.app/
 
 ## Project setup
 ```
