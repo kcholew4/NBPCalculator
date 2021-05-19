@@ -4,7 +4,7 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-const socket = new WebSocket("ws://localhost:8080");
+const socket = new WebSocket("wss://nbpcalculator-api.herokuapp.com");
 
 export default new Vuex.Store({
   state: {
