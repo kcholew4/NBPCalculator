@@ -22,17 +22,30 @@
           </template>
         </div>
         <div class="calculator">
-          <v-date-picker
-            class="calendar"
-            v-if="availableRange"
-            :min-date="new Date(availableRange.min)"
-            :max-date="new Date(availableRange.max)"
-            :disabled-dates="disabledDays"
-            @update:to-page="movePage"
-            @dayclick="clickedDate"
-            v-model="date"
-            :model-config="{ type: 'string', mask: 'YYYY-MM-DD' }"
-          ></v-date-picker>
+          <div style="min-width: 250px; height: 266px">
+            <v-date-picker
+              class="calendar"
+              v-if="availableRange && webSocketConnected"
+              :min-date="new Date(availableRange.min)"
+              :max-date="new Date(availableRange.max)"
+              :disabled-dates="disabledDays"
+              @update:to-page="movePage"
+              @dayclick="clickedDate"
+              v-model="date"
+              :model-config="{ type: 'string', mask: 'YYYY-MM-DD' }"
+            ></v-date-picker>
+            <div
+              v-else
+              style="
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              Ładowanie...
+            </div>
+          </div>
           <div class="fields">
             <div class="input-group">
               <input

@@ -24,16 +24,19 @@ export default new Vuex.Store({
     SET_EXCHANGE_RATES(state, rates) {
       state.exchangeRates = rates;
     },
-    WEBSOCKET_CONNECTED(state, connected) {
-      state.webSocketConnected = connected;
+    WEBSOCKET_CONNECTED(state) {
+      state.webSocketConnected = true;
     },
-    SET_READY(state, ready) {
-      state.ready = ready;
+    SET_LOADING(state) {
+      state.ready = false;
+    },
+    SET_READY(state) {
+      state.ready = true;
     },
   },
   actions: {
     getAvailableRange({ commit }) {
-      commit("SET_READY", false);
+      commit("SET_LOADING");
       socket.send(
         JSON.stringify({
           method: "get_range",
@@ -42,7 +45,7 @@ export default new Vuex.Store({
       );
     },
     getDisabledDays({ commit }, page) {
-      commit("SET_READY", false);
+      commit("SET_LOADING");
       socket.send(
         JSON.stringify({
           method: "get_disabled_days",
@@ -52,7 +55,7 @@ export default new Vuex.Store({
       );
     },
     getExchangeRates({ commit }, page) {
-      commit("SET_READY", false);
+      commit("SET_LOADING");
       socket.send(
         JSON.stringify({
           method: "get_rates",
@@ -106,7 +109,7 @@ export default new Vuex.Store({
   plugins: [
     ({ commit }) => {
       socket.onopen = () => {
-        commit("WEBSOCKET_CONNECTED", true);
+        commit("WEBSOCKET_CONNECTED");
       };
 
       socket.onmessage = ({ data }) => {
@@ -115,15 +118,15 @@ export default new Vuex.Store({
         switch (parsed.id) {
           case 1:
             commit("SET_AVAILABLE_RANGE", parsed.response);
-            commit("SET_READY", true);
+            commit("SET_READY");
             break;
           case 2:
             commit("SET_DISABLED_DAYS", parsed.response);
-            commit("SET_READY", true);
+            commit("SET_READY");
             break;
           case 3:
             commit("SET_EXCHANGE_RATES", parsed.response);
-            commit("SET_READY", true);
+            commit("SET_READY");
             break;
           default:
             break;
