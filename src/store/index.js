@@ -109,6 +109,8 @@ export default new Vuex.Store({
     ({ commit }) => {
       socket.onopen = () => {
         commit("WEBSOCKET_CONNECTED");
+
+        setInterval(() => socket.send("ping"), 50000);
       };
 
       socket.onmessage = ({ data }) => {
