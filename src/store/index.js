@@ -124,7 +124,7 @@ export default new Vuex.Store({
             commit("SET_READY");
             break;
           case 3:
-            commit("SET_EXCHANGE_RATES", parsed.response);
+            commit("SET_EXCHANGE_RATES", parsed.response.tables);
             commit("SET_READY");
             break;
           default:
