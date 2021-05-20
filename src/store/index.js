@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-const socket = new WebSocket("wss://nbpcalculator-api.herokuapp.com");
+const socket = new WebSocket(process.env.VUE_APP_API_URL);
 
 export default new Vuex.Store({
   state: {
