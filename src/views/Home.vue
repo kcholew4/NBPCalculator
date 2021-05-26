@@ -3,7 +3,6 @@
     <div class="container">
       <loading :active="!webSocketConnected" :is-full-page="true"></loading>
       <v-date-picker
-        v-if="webSocketConnected"
         class="calendar"
         :min-date="range.min"
         :max-date="range.max"
