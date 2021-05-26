@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <div class="container">
+      <loading :active="!webSocketConnected" :is-full-page="true"></loading>
       <v-date-picker
         v-if="webSocketConnected"
         class="calendar"
@@ -10,23 +11,21 @@
         @update:to-page="movePage"
         @dayclick="clickedDate"
         :value="range.max"
-        :model-config="{ type: 'string', mask: 'YYYY-MM-DD' }"
       ></v-date-picker>
       <div class="fields">
-        <div v-if="webSocketConnected" class="input-group">
-          <input v-model.number="amount" type="number" />
-          <select v-model="selectedCurrency" v-if="Object.keys(table).length">
-            <option disabled value="">Wybierz walutę</option>
-            <option
-              v-for="(currency, index) in currencies"
-              :key="index"
-              :value="currency"
-            >
-              {{ currency }}
-            </option>
-          </select>
+        <div class="input">
+          <input
+            v-model.number="amount"
+            type="number"
+            placeholder="Wpisz kwotę"
+          />
         </div>
-        <div v-else>Ładowanie...</div>
+        <v-select
+          :options="currencies"
+          placeholder="Wybierz walutę"
+          v-model="selectedCurrency"
+          class="select"
+        ></v-select>
         <div class="result">{{ selectedCurrency ? rate : "0.0000" }} PLN</div>
       </div>
     </div>
@@ -35,11 +34,18 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import _ from "lodash";
+
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 
 export default {
+  components: {
+    Loading,
+  },
   data() {
     return {
-      amount: null,
+      amount: 1,
       selectedCurrency: "",
     };
   },
@@ -51,7 +57,7 @@ export default {
       webSocketConnected: (state) => state.webSocketConnected,
     }),
     currencies() {
-      return this.table.rates.map((el) => el.code);
+      return _.isEmpty(this.table) ? [] : this.table.rates.map((el) => el.code);
     },
     rate() {
       const currency = this.table.rates.find(
@@ -67,7 +73,9 @@ export default {
       this.fetchDisabledDays(page);
     },
     clickedDate(date) {
-      this.fetchTable(date.id);
+      if (!date.isDisabled) {
+        this.fetchTable(date.id);
+      }
     },
   },
   created() {
@@ -87,6 +95,7 @@ export default {
   display: flex;
   background-color: white;
   border-radius: 0.5rem;
+  position: relative;
 }
 
 .fields {
@@ -95,24 +104,17 @@ export default {
   //padding: 25px;
 }
 
-.input-group {
+.input {
   display: flex;
 
   input {
-    padding: 15px;
+    outline: none;
     width: 100%;
-    outline: none;
-    font-size: inherit;
-    margin-right: 10px;
-    border: 1px solid #cbd5e0;
-    border-radius: 0.5rem;
-  }
-
-  select {
-    font-size: inherit;
-    outline: none;
-    border: 1px solid #cbd5e0;
-    border-radius: 0.5rem;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(60, 60, 60, 0.26);
+    margin-bottom: 10px;
+    font-size: 18px;
   }
 }
 
