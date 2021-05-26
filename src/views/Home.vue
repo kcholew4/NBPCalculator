@@ -2,30 +2,35 @@
   <div class="home">
     <div class="container">
       <loading :active="!webSocketConnected" :is-full-page="true"></loading>
-      <v-date-picker
-        class="calendar"
-        :min-date="range.min"
-        :max-date="range.max"
-        :disabled-dates="disabledDays"
-        @update:to-page="movePage"
-        @dayclick="clickedDate"
-        :value="range.max"
-      ></v-date-picker>
-      <div class="fields">
-        <div class="input">
-          <input
-            v-model.number="amount"
-            type="number"
-            placeholder="Wpisz kwotę"
-          />
+      <div class="table-url">
+        Tabela: <a :href="tableUrl" target="_blank">{{ table.table }}</a>
+      </div>
+      <div style="display: flex">
+        <v-date-picker
+          class="calendar"
+          :min-date="range.min"
+          :max-date="range.max"
+          :disabled-dates="disabledDays"
+          @update:to-page="movePage"
+          @dayclick="clickedDate"
+          :value="range.max"
+        ></v-date-picker>
+        <div class="fields">
+          <div class="input">
+            <input
+              v-model.number="amount"
+              type="number"
+              placeholder="Wpisz kwotę"
+            />
+          </div>
+          <v-select
+            :options="currencies"
+            placeholder="Wybierz walutę"
+            v-model="selectedCurrency"
+            class="select"
+          ></v-select>
+          <div class="result">{{ selectedCurrency ? rate : "0.0000" }} PLN</div>
         </div>
-        <v-select
-          :options="currencies"
-          placeholder="Wybierz walutę"
-          v-model="selectedCurrency"
-          class="select"
-        ></v-select>
-        <div class="result">{{ selectedCurrency ? rate : "0.0000" }} PLN</div>
       </div>
     </div>
   </div>
@@ -65,6 +70,17 @@ export default {
       const exchange = currency.rate * this.amount;
       return exchange.toFixed(4);
     },
+    tableUrl() {
+      if (_.isEmpty(this.table)) {
+        return "#";
+      }
+
+      const number = this.table.table.split("/")[0].padStart(3, "0");
+      const date = this.table.date.split("-");
+      const id = `a${number}z${date[0].slice(-2)}${date[1]}${date[2]}`;
+
+      return `https://www.nbp.pl/home.aspx?navid=archa&c=/ascx/tabarch.ascx&n=${id}`;
+    },
   },
   methods: {
     ...mapActions(["fetchRange", "fetchDisabledDays", "fetchTable"]),
@@ -87,11 +103,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.table-url {
+  margin-bottom: 15px;
+
+  a {
+    text-decoration: none;
+    color: #3182ce;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .container {
   padding: 25px;
   max-width: 720px;
   margin: 120px auto 0 auto;
-  display: flex;
   background-color: white;
   border-radius: 0.5rem;
   position: relative;
