@@ -39,9 +39,9 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import _ from "lodash";
-
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
+import { DateTime } from "luxon";
 
 export default {
   components: {
@@ -97,7 +97,11 @@ export default {
     this.fetchRange();
   },
   mounted() {
-    this.fetchTable(this.range.max.toISOString().split("T")[0]);
+    this.fetchTable(
+      DateTime.fromISO(this.range.max.toISOString().split("T")[0])
+        .minus({ days: 1 })
+        .toISODate()
+    );
   },
 };
 </script>
