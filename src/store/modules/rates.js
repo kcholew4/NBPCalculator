@@ -1,21 +1,21 @@
+import _ from "lodash";
+
 export const state = {
-  range: {
-    min: new Date(),
-    max: new Date(),
-  },
+  range: {},
   disabledDays: [],
+  savedDisabledDays: [],
   table: {},
 };
 
 export const mutations = {
-  SET_RANGE(state, { min, max }) {
-    state.range = {
-      min: new Date(min),
-      max: new Date(max),
-    };
+  SET_RANGE(state, range) {
+    state.range = range;
   },
-  SET_DISABLED_DAYS(state, disabledDays) {
-    state.disabledDays = disabledDays;
+  SET_DISABLED_DAYS(state, days) {
+    state.disabledDays.push(...days);
+  },
+  SET_SAVED_DISABLED_DAYS(state, key) {
+    state.savedDisabledDays.push(key);
   },
   SET_TABLE(state, table) {
     state.table = table;
@@ -23,24 +23,51 @@ export const mutations = {
 };
 
 export const actions = {
-  fetchRange({ commit }) {
-    commit("FETCH_DATA", {
-      id: 1,
-      method: "get_range",
+  getRange({ commit }) {
+    this.$socket.emit("table:range", {}, (data) => {
+      if (data.ok) {
+        commit("SET_RANGE", data.response);
+      }
     });
   },
-  fetchDisabledDays({ commit }, page) {
-    commit("FETCH_DATA", {
-      id: 2,
-      method: "get_disabled_days",
-      payload: page,
+  getDisabledDays({ commit, state }, { year, month }) {
+    const key = `${year}/${month}`;
+
+    if (!_.includes(state.savedDisabledDays, key)) {
+      this.$socket.emit("table:disabled-days", { year, month }, (data) => {
+        if (data.ok) {
+          commit("SET_DISABLED_DAYS", data.response);
+          commit("SET_SAVED_DISABLED_DAYS", key);
+        }
+      });
+    }
+  },
+  getTable({ commit }, date) {
+    this.$socket.emit("table:get", { date }, (data) => {
+      if (data.ok) {
+        data.response.rates.push({
+          code: "PLN",
+          rate: 1,
+        });
+        commit("SET_TABLE", data.response);
+      }
     });
   },
-  fetchTable({ commit }, date) {
-    commit("FETCH_DATA", {
-      id: 3,
-      method: "get_table",
-      payload: date,
-    });
+};
+
+export const getters = {
+  rangeAvailable(state) {
+    return !_.isEmpty(state.range);
+  },
+  tableAvailable(state) {
+    return !_.isEmpty(state.table);
+  },
+  getCurrencyRate(state, getters) {
+    return (code) => {
+      if (getters.tableAvailable) {
+        const { rate } = state.table.rates.find((el) => el.code === code);
+        return rate;
+      }
+    };
   },
 };

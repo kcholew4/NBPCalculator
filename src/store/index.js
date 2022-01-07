@@ -1,35 +1,26 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
 import * as rates from "./modules/rates";
-import createWebSocketPlugin from "./plugins/websocket";
+import createSocketPlugin from "./plugins/io.js";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    webSocketConnected: false,
-    fetching: [],
+    connected: false,
   },
   mutations: {
-    WEBSOCKET_CONNECTED(state) {
-      state.webSocketConnected = true;
+    SOCKET_IO_CONNECTED(state) {
+      state.connected = true;
     },
-    FETCH_DATA(state) {
-      state.fetching.push("1");
-    },
-    STOP_FETCHING(state) {
-      state.fetching.shift();
+    SOCKET_IO_DISCONNECTED(state) {
+      state.connected = false;
     },
   },
   actions: {},
-  getters: {
-    isFetching(state) {
-      return Boolean(state.fetching.length);
-    },
-  },
+  getters: {},
   modules: {
     rates,
   },
-  plugins: [createWebSocketPlugin()],
+  plugins: [createSocketPlugin()],
 });

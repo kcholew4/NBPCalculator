@@ -4,6 +4,8 @@
   </div>
 </template>
 
+<script></script>
+
 <style lang="scss">
 * {
   box-sizing: border-box;
@@ -12,11 +14,11 @@
 
 html {
   font-size: 18px;
-  font-family: "KoHo", sans-serif;
+  font-family: "Merriweather", serif;
 }
 
 body {
-  background-color: #e7f8ff;
+  background-color: #fdfdfd;
 }
 
 strong {
