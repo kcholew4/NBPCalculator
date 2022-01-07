@@ -6,6 +6,7 @@
       size="10"
       :value="value"
       @input="$emit('input', $event.target.value)"
+      :disabled="!tableAvailable"
     />
     <v-select
       :options="currencyList"
@@ -76,6 +77,10 @@ export default {
     font-family: inherit;
     padding: 10px;
     font-size: 1rem;
+
+    &:disabled {
+      background-color: #f8f8f8;
+    }
   }
 
   &__select {

@@ -1,37 +1,42 @@
 <template>
   <div class="calculator">
-    <div class="calendar">
-      <v-date-picker
-        is-expanded
-        :disabled-dates="disabledDates"
-        :value="maxDate"
-        :min-date="minDate"
-        :max-date="maxDate"
-        @update:to-page="toPage"
-        @dayclick="daySelected"
-      />
-      <Loading v-if="!rangeAvailable" :active="true" :is-full-page="false" />
+    <div class="calculator__header">
+      Tabela nr <strong>{{ table.table }}</strong> z dnia {{ table.date }}
     </div>
-    <div class="inputs">
-      <CurrencyInput
-        class="currency-input"
-        v-model="firstInputRate"
-        @selectInput="selectInput(0, $event)"
-        :selectValue="inputs[0].selected"
-      />
-      <img
-        src="@/assets/compare_arrows.svg"
-        width="35"
-        height="35"
-        class="arrows"
-        @click="switchCurrencies"
-      />
-      <CurrencyInput
-        class="currency-input"
-        v-model="secondInputRate"
-        @selectInput="selectInput(1, $event)"
-        :selectValue="inputs[1].selected"
-      />
+    <div class="calculator__wrapper">
+      <div class="calendar">
+        <v-date-picker
+          is-expanded
+          :disabled-dates="disabledDates"
+          :value="maxDate"
+          :min-date="minDate"
+          :max-date="maxDate"
+          @update:to-page="toPage"
+          @dayclick="daySelected"
+        />
+        <Loading v-if="!rangeAvailable" :active="true" :is-full-page="false" />
+      </div>
+      <div class="inputs">
+        <CurrencyInput
+          class="currency-input"
+          v-model="firstInputRate"
+          @selectInput="selectInput(0, $event)"
+          :selectValue="inputs[0].selected"
+        />
+        <img
+          src="@/assets/compare_arrows.svg"
+          width="35"
+          height="35"
+          class="arrows"
+          @click="switchCurrencies"
+        />
+        <CurrencyInput
+          class="currency-input"
+          v-model="secondInputRate"
+          @selectInput="selectInput(1, $event)"
+          :selectValue="inputs[1].selected"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -167,13 +172,19 @@ export default {
 
 .calculator {
   margin: 0 auto 0 auto;
-  margin-top: 100px;
-  flex-basis: 800px;
+  margin-top: 50px;
   background-color: #eef2f9;
-  display: flex;
   max-width: 800px;
   padding: 35px;
   border-radius: 13px;
+
+  &__wrapper {
+    display: flex;
+  }
+
+  &__header {
+    margin-bottom: 20px;
+  }
 }
 
 .calendar {
