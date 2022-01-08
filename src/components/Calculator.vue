@@ -1,7 +1,10 @@
 <template>
   <div class="calculator">
     <div class="calculator__header">
-      Tabela nr <strong>{{ table.table }}</strong> z dnia {{ table.date }}
+      <template v-if="tableAvailable">
+        Tabela nr <strong>{{ table.table }}</strong> z dnia {{ table.date }}
+      </template>
+      <template v-else>Ładowanie tabeli...</template>
     </div>
     <div class="calculator__wrapper">
       <div class="calendar-container">
