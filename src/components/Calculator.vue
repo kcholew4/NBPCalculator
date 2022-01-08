@@ -4,17 +4,23 @@
       Tabela nr <strong>{{ table.table }}</strong> z dnia {{ table.date }}
     </div>
     <div class="calculator__wrapper">
-      <div class="calendar">
-        <v-date-picker
-          is-expanded
-          :disabled-dates="disabledDates"
-          :value="maxDate"
-          :min-date="minDate"
-          :max-date="maxDate"
-          @update:to-page="toPage"
-          @dayclick="daySelected"
-        />
-        <Loading v-if="!rangeAvailable" :active="true" :is-full-page="false" />
+      <div class="calendar-container">
+        <div class="calendar">
+          <v-date-picker
+            is-expanded
+            :disabled-dates="disabledDates"
+            :value="maxDate"
+            :min-date="minDate"
+            :max-date="maxDate"
+            @update:to-page="toPage"
+            @dayclick="daySelected"
+          />
+          <Loading
+            v-if="!rangeAvailable"
+            :active="true"
+            :is-full-page="false"
+          />
+        </div>
       </div>
       <div class="inputs">
         <CurrencyInput
@@ -180,6 +186,10 @@ export default {
 
   &__wrapper {
     display: flex;
+
+    @media only screen and (max-width: 800px) {
+      flex-direction: column;
+    }
   }
 
   &__header {
@@ -191,8 +201,17 @@ export default {
   position: relative;
 }
 
+.calendar-container {
+  display: flex;
+  justify-content: center;
+
+  @media only screen and (max-width: 800px) {
+    margin-bottom: 30px;
+  }
+}
+
 .inputs {
-  flex: 1 1 100%;
+  flex: 1 1;
   display: flex;
   flex-direction: column;
   justify-content: center;

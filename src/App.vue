@@ -19,6 +19,8 @@ html {
 
 body {
   background-color: #fdfdfd;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 strong {
